@@ -30,7 +30,7 @@ Additionally, we assume that remote connectivity to the virtual machine is allow
   }
 ```
 
-If you were testing, we recommend the follwing sequence on your local machine:
+When you are testing, we recommend the follwing sequence in your working directory, on your local machine:
 
 ```
 mkdir .ssh
