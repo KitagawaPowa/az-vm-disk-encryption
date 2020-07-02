@@ -1,4 +1,3 @@
-######################
 # Use this data source to access information about an existing Virtual Machine.
 
 data "azurerm_virtual_machine" "azvm" {
@@ -14,7 +13,6 @@ output "virtual_machine_resource_group_name" {
   value = data.azurerm_virtual_machine.azvm.resource_group_name
 }
 
-######################
 # Use this data source to access information about an existing Network Security Group.
 
 data "azurerm_network_security_group" "azvm" {
@@ -30,7 +28,6 @@ output "azurerm_network_security_group_security_rule" {
   value = data.azurerm_network_security_group.azvm.security_rule
 }
 
-######################
 # Use this data source to access information about an existing Public IP Address.
 
 data "azurerm_public_ip" "azvm" {
@@ -46,6 +43,7 @@ output "azurerm_public_ip_address" {
   value = data.azurerm_public_ip.azvm.ip_address
 }
 
+# Create customized output for reference. In this case, a local variable and a data source.
 output "ssh_command" {
   value = "ssh -i .ssh/id_rsa ${var.tfadmin}@${data.azurerm_public_ip.azvm.ip_address}"
 }
