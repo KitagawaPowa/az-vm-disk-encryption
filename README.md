@@ -1,5 +1,5 @@
 # Azure Virtual Machine
-This repository contains a sample Terraform configuration to create an Azure Virtual Machine resource. This example assumes that the purpose of the virtual machine is to prepare a functional Terraform server with an Ubuntu operating system.
+This repository contains a sample Terraform configuration to create an Azure Virtual Machine resource. This example assumes that the purpose of the virtual machine is to prepare a functional Terraform server with an Ubuntu operating system. However, the ultimate intent is to change the properties of this generic item to fit more complex scenarios.
 
 ## About this example
 
