@@ -4,7 +4,7 @@
 *.tfstate
 *.tfstate.backup
 
-# Terraform provder files #
+# Terraform provider files #
 ###########################
 .terraform
 
@@ -16,4 +16,3 @@
 ######################
 .DS_Store
 .DS_Store?
-
