@@ -30,7 +30,7 @@ Additionally, we assume that remote connectivity to the virtual machine is allow
   }
 ```
 
-When you are testing, we recommend the follwing sequence in your working directory, on your local machine:
+When you are testing, we recommend the following sequence in your working directory, on your local machine:
 
 ```
 mkdir .ssh
@@ -45,4 +45,4 @@ ssh -i .ssh/id_rsa tfadmin@40.86.209.90
 
 ### `gitignore` Files
 
-When storing this configuration, we ignore anything to do with Terraform state files, the Terraform provider files, and anything that may expose private data in your local SSH directory.
+When storing this configuration, ignore anything to do with Terraform state files, the Terraform provider files, and anything that may expose private data in your local SSH directory.
