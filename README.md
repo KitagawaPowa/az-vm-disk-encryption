@@ -1,9 +1,12 @@
 # Azure Virtual Machine
-This repository contains a sample Terraform configuration to create an Azure Virtual Machine resource.
-
-This example assumes that the purpose of the virtual machine is to prepare a functional Terraform server with an Ubuntu operating system.
+This repository contains a sample Terraform configuration to create an Azure Virtual Machine resource. This example assumes that the purpose of the virtual machine is to prepare a functional Terraform server with an Ubuntu operating system.
 
 ## About this example
+
+Clone this repository to your local machine. Modify the final properties of the target environment by making changes in the contents of `terraform.tfvars`. Making changes there will supercede the default changes in `variable.tf`.
+
+### Azure Security Credentials
+
 To use this configuration, you will require appropriate identity credentials to access your Azure environment. More specifically, the following:
 
 ```
@@ -12,6 +15,7 @@ ARM_CLIENT_SECRET
 ARM_TENANT_ID
 ARM_CLIENT_ID
 ```
+These should be expressed as environment variables in your local machine and the variables are available at the time of a Terraform Apply run.
 
 ### SSH connectivity
 

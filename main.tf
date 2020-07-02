@@ -5,57 +5,57 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "tfserver" {
-  name     = "tfserver"
-  location = "Canada East"
+resource "azurerm_resource_group" "azvm" {
+  name     = "${var.prefix}-rg"
+  location = var.location
 }
 
-resource "azurerm_virtual_network" "tfserver" {
-  name                = "tfserver-network"
+resource "azurerm_virtual_network" "azvm" {
+  name                = "${var.prefix}-vn"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.tfserver.location
-  resource_group_name = azurerm_resource_group.tfserver.name
+  location            = azurerm_resource_group.azvm.location
+  resource_group_name = azurerm_resource_group.azvm.name
 }
 
-resource "azurerm_subnet" "tfserver" {
-  name                 = "internal"
-  resource_group_name  = azurerm_resource_group.tfserver.name
-  virtual_network_name = azurerm_virtual_network.tfserver.name
+resource "azurerm_subnet" "azvm" {
+  name                 = "${var.prefix}-sn"
+  resource_group_name  = azurerm_resource_group.azvm.name
+  virtual_network_name = azurerm_virtual_network.azvm.name
   address_prefix       = "10.0.2.0/24"
 }
 
-resource "azurerm_network_interface" "tfserver" {
-  name                = "tfserver-nic"
-  location            = azurerm_resource_group.tfserver.location
-  resource_group_name = azurerm_resource_group.tfserver.name
+resource "azurerm_network_interface" "azvm" {
+  name                = "${var.prefix}-nic"
+  location            = azurerm_resource_group.azvm.location
+  resource_group_name = azurerm_resource_group.azvm.name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.tfserver.id
+    subnet_id                     = azurerm_subnet.azvm.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.tfserver.id
+    public_ip_address_id          = azurerm_public_ip.azvm.id
   }
 }
 
-resource "azurerm_public_ip" "tfserver" {
-  name                = "tfserver-public-nic"
-  resource_group_name = azurerm_resource_group.tfserver.name
-  location            = azurerm_resource_group.tfserver.location
+resource "azurerm_public_ip" "azvm" {
+  name                = "${var.prefix}-pip"
+  resource_group_name = azurerm_resource_group.azvm.name
+  location            = azurerm_resource_group.azvm.location
   allocation_method   = "Static"
 }
 
-resource "azurerm_linux_virtual_machine" "tfserver" {
-  name                = "tfserver-machine"
-  resource_group_name = azurerm_resource_group.tfserver.name
-  location            = azurerm_resource_group.tfserver.location
+resource "azurerm_linux_virtual_machine" "azvm" {
+  name                = "${var.prefix}-vm"
+  resource_group_name = azurerm_resource_group.azvm.name
+  location            = azurerm_resource_group.azvm.location
   size                = "Standard_F2"
-  admin_username      = "tfadmin"
+  admin_username      = var.tfadmin
   network_interface_ids = [
-    azurerm_network_interface.tfserver.id,
+    azurerm_network_interface.azvm.id,
   ]
 
   admin_ssh_key {
-    username   = "tfadmin"
+    username   = var.tfadmin
     public_key = file("./.ssh/id_rsa.pub")
   }
 
@@ -73,10 +73,10 @@ resource "azurerm_linux_virtual_machine" "tfserver" {
   }
 }
 
-resource "azurerm_network_security_group" "tfserver" {
-  name                = "tfserver_security_group"
-  location            = azurerm_resource_group.tfserver.location
-  resource_group_name = azurerm_resource_group.tfserver.name
+resource "azurerm_network_security_group" "azvm" {
+  name                = "${var.prefix}-nsg"
+  location            = azurerm_resource_group.azvm.location
+  resource_group_name = azurerm_resource_group.azvm.name
 }
 
 resource "azurerm_network_security_rule" "ssh_port" {
@@ -89,8 +89,8 @@ resource "azurerm_network_security_rule" "ssh_port" {
   destination_port_range      = "22"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.tfserver.name
-  network_security_group_name = azurerm_network_security_group.tfserver.name
+  resource_group_name         = azurerm_resource_group.azvm.name
+  network_security_group_name = azurerm_network_security_group.azvm.name
 }
 
 resource "azurerm_network_security_rule" "tfe_https" {
@@ -103,8 +103,8 @@ resource "azurerm_network_security_rule" "tfe_https" {
   destination_port_range      = "443"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.tfserver.name
-  network_security_group_name = azurerm_network_security_group.tfserver.name
+  resource_group_name         = azurerm_resource_group.azvm.name
+  network_security_group_name = azurerm_network_security_group.azvm.name
 }
 
 resource "azurerm_network_security_rule" "tfe_dashboard" {
@@ -117,6 +117,6 @@ resource "azurerm_network_security_rule" "tfe_dashboard" {
   destination_port_range      = "8800"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.tfserver.name
-  network_security_group_name = azurerm_network_security_group.tfserver.name
+  resource_group_name         = azurerm_resource_group.azvm.name
+  network_security_group_name = azurerm_network_security_group.azvm.name
 }
