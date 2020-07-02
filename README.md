@@ -4,7 +4,7 @@ This repository contains a sample Terraform configuration to create an Azure Vir
 ## About this example
 
 * Clone this repository to your local machine.
-* Modify the final properties of the target environment by making changes in the contents of `terraform.tfvars`. Making changes there supercedes the default changes in `variable.tf`.
+* Modify the final properties of the target environment by making changes in the contents of `terraform.tfvars`. Making changes there supercedes the default changes in `variables.tf`.
 * Make it your own
 
 ### Azure Security Credentials
