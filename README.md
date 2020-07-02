@@ -3,11 +3,13 @@ This repository contains a sample Terraform configuration to create an Azure Vir
 
 ## About this example
 
-Clone this repository to your local machine. Modify the final properties of the target environment by making changes in the contents of `terraform.tfvars`. Making changes there will supercede the default changes in `variable.tf`.
+* Clone this repository to your local machine.
+* Modify the final properties of the target environment by making changes in the contents of `terraform.tfvars`. Making changes there supercedes the default changes in `variable.tf`.
+* Make it your own
 
 ### Azure Security Credentials
 
-To use this configuration, you will require appropriate identity credentials to access your Azure environment. More specifically, the following:
+To use this configuration, you require appropriate identity credentials to access your Azure environment. More specifically, the following:
 
 ```
 ARM_SUBSCRIPTION_ID
@@ -15,7 +17,7 @@ ARM_CLIENT_SECRET
 ARM_TENANT_ID
 ARM_CLIENT_ID
 ```
-These should be expressed as environment variables in your local machine and the variables are available at the time of a Terraform Apply run.
+These should be expressed as environment variables in your local machine and the variables must be available at the time of a Terraform Apply run.
 
 ### SSH connectivity
 
@@ -28,14 +30,14 @@ Additionally, we assume that remote connectivity to the virtual machine is allow
   }
 ```
 
-If you were testing this locally, we recommend the follwing sequence:
+If you were testing, we recommend the follwing sequence on your local machine:
 
 ```
 mkdir .ssh
 ssh-keygen -f .ssh/id_rsa
 ```
 
-This will produce your private and public keys: `id_rsa` and `id_rsa.pub`. You use these to connect to your virtual machine. For instance, assume that your new virtual machine is publically available at 40.86.209.90, then we connect in this manner:
+The `ssh-keygen` command produces your private and public keys: `id_rsa` and `id_rsa.pub`. You use those to connect to your virtual machine. For instance, assume that your new virtual machine is publically available at 40.86.209.90, then you connect in this manner:
 
 ```
 ssh -i .ssh/id_rsa tfadmin@40.86.209.90
