@@ -37,7 +37,7 @@ mkdir .ssh
 ssh-keygen -f .ssh/id_rsa
 ```
 
-The `ssh-keygen` command produces your private and public keys: `id_rsa` and `id_rsa.pub`. You use those to connect to your virtual machine. For instance, assume that your new virtual machine is publically available at 40.86.209.90, then you connect in this manner:
+The `ssh-keygen` command produces your private and public keys: `id_rsa` and `id_rsa.pub`. You use those to connect to your virtual machine. For instance, assume that your new virtual machine is publically available at `40.86.209.90`, then you connect in this manner:
 
 ```
 ssh -i .ssh/id_rsa tfadmin@40.86.209.90
