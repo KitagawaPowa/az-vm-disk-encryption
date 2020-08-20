@@ -1,6 +1,6 @@
 variable "prefix" {
   type    = string
-  default = "tfe"
+  default = "vm"
 }
 
 variable "location" {

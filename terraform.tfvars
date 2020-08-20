@@ -1,3 +1,3 @@
-prefix   = "tfe"
-location = "Canada East"
+prefix   = "tester"
+location = "US East"
 tfadmin  = "tfadmin"

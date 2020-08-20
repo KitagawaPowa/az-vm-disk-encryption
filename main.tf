@@ -5,29 +5,37 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "azvm" {
-  name     = "${var.prefix}-rg"
-  location = var.location
+# resource "azurerm_resource_group" "azvm" {
+#   name     = "${var.prefix}-rg"
+#   location = var.location
+# }
+
+data "azurerm_resource_group" "azvm" {
+  name = "rg-interrupt"
+}
+
+output "id" {
+  value = data.azurerm_resource_group.azvm.name
 }
 
 resource "azurerm_virtual_network" "azvm" {
   name                = "${var.prefix}-vn"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.azvm.location
-  resource_group_name = azurerm_resource_group.azvm.name
+  location            = data.azurerm_resource_group.azvm.location
+  resource_group_name = data.azurerm_resource_group.azvm.name
 }
 
 resource "azurerm_subnet" "azvm" {
   name                 = "${var.prefix}-sn"
-  resource_group_name  = azurerm_resource_group.azvm.name
+  resource_group_name  = data.azurerm_resource_group.azvm.name
   virtual_network_name = azurerm_virtual_network.azvm.name
   address_prefix       = "10.0.2.0/24"
 }
 
 resource "azurerm_network_interface" "azvm" {
   name                = "${var.prefix}-nic"
-  location            = azurerm_resource_group.azvm.location
-  resource_group_name = azurerm_resource_group.azvm.name
+  location            = data.azurerm_resource_group.azvm.location
+  resource_group_name = data.azurerm_resource_group.azvm.name
 
   ip_configuration {
     name                          = "internal"
@@ -39,15 +47,20 @@ resource "azurerm_network_interface" "azvm" {
 
 resource "azurerm_public_ip" "azvm" {
   name                = "${var.prefix}-pip"
-  resource_group_name = azurerm_resource_group.azvm.name
-  location            = azurerm_resource_group.azvm.location
+  resource_group_name = data.azurerm_resource_group.azvm.name
+  location            = data.azurerm_resource_group.azvm.location
   allocation_method   = "Static"
+}
+
+data "azurerm_disk_encryption_set" "azdes" {
+  name                = "interrupt-disk-encryption-set"
+  resource_group_name = data.azurerm_resource_group.azvm.name
 }
 
 resource "azurerm_linux_virtual_machine" "azvm" {
   name                = "${var.prefix}-vm"
-  resource_group_name = azurerm_resource_group.azvm.name
-  location            = azurerm_resource_group.azvm.location
+  resource_group_name = data.azurerm_resource_group.azvm.name
+  location            = data.azurerm_resource_group.azvm.location
   size                = "Standard_F2"
   admin_username      = var.tfadmin
   network_interface_ids = [
@@ -56,13 +69,14 @@ resource "azurerm_linux_virtual_machine" "azvm" {
 
   admin_ssh_key {
     username   = var.tfadmin
-    public_key = file("./.ssh/id_rsa.pub")
+    public_key = file("~/.ssh/interrupt_rsa.pub")
   }
 
   os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-    disk_size_gb         = "60"
+    caching                = "ReadWrite"
+    storage_account_type   = "Standard_LRS"
+    disk_size_gb           = "60"
+    disk_encryption_set_id = data.azurerm_disk_encryption_set.azdes.id
   }
 
   source_image_reference {
@@ -75,8 +89,8 @@ resource "azurerm_linux_virtual_machine" "azvm" {
 
 resource "azurerm_network_security_group" "azvm" {
   name                = "${var.prefix}-nsg"
-  location            = azurerm_resource_group.azvm.location
-  resource_group_name = azurerm_resource_group.azvm.name
+  location            = data.azurerm_resource_group.azvm.location
+  resource_group_name = data.azurerm_resource_group.azvm.name
 }
 
 resource "azurerm_network_security_rule" "ssh_port" {
@@ -89,7 +103,7 @@ resource "azurerm_network_security_rule" "ssh_port" {
   destination_port_range      = "22"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.azvm.name
+  resource_group_name         = data.azurerm_resource_group.azvm.name
   network_security_group_name = azurerm_network_security_group.azvm.name
 }
 
@@ -103,7 +117,7 @@ resource "azurerm_network_security_rule" "tfe_https" {
   destination_port_range      = "443"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.azvm.name
+  resource_group_name         = data.azurerm_resource_group.azvm.name
   network_security_group_name = azurerm_network_security_group.azvm.name
 }
 
@@ -117,6 +131,6 @@ resource "azurerm_network_security_rule" "tfe_dashboard" {
   destination_port_range      = "8800"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.azvm.name
+  resource_group_name         = data.azurerm_resource_group.azvm.name
   network_security_group_name = azurerm_network_security_group.azvm.name
 }
