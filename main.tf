@@ -1,21 +1,11 @@
 # Configure the Azure Provider
 provider "azurerm" {
   # whilst the `version` attribute is optional, we recommend pinning to a given version of the Provider
-  version = "=2.0.0"
   features {}
 }
 
-# resource "azurerm_resource_group" "azvm" {
-#   name     = "${var.prefix}-rg"
-#   location = var.location
-# }
-
 data "azurerm_resource_group" "azvm" {
   name = "rg-interrupt"
-}
-
-output "id" {
-  value = data.azurerm_resource_group.azvm.name
 }
 
 resource "azurerm_virtual_network" "azvm" {
