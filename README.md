@@ -19,6 +19,54 @@ ARM_CLIENT_ID
 ```
 These should be expressed as environment variables in your local machine and the variables must be available at the time of a Terraform Apply run.
 
+### Using SSE/CMK Keys as Disk Encryption Sets
+
+We configure the Azure Key Vault service for Server-side encryption (SSE) for the Azure Managed Disk in this config. The procedured can be procured using the Terraform provider azurerm_disk_encryption_set. In this example, however, the work is done manually by creating a dedicate Azure Key Vault (AKV) with a generic key, and we associate the AKV service to a Disk Encryption Set.
+
+![Drag Racing](img/screen-01.png)
+
+Since the resource group already exists, we do not create a new resource but reference it as a standard for the config.
+
+```
+data "azurerm_resource_group" "azvm" {
+  name = "rg-interrupt"
+}
+```
+
+In our basic configuration we include the reference to the disk encryption set in `main.tf` as follows:
+
+```
+data "azurerm_disk_encryption_set" "azdes" {
+  name                = "interrupt-disk-encryption-set"
+  resource_group_name = data.azurerm_resource_group.azvm.name
+}
+```
+
+We then reference the disk encryption set id under the `azurerm_linux_virtual_machine` resource stanza as follows:
+
+```
+  os_disk {
+    caching                = "ReadWrite"
+    storage_account_type   = "Standard_LRS"
+    disk_size_gb           = "60"
+    disk_encryption_set_id = data.azurerm_disk_encryption_set.azdes.id
+  }
+```
+
+Once the `terraform apply` stage is completed, we examine the association for the new disk (attached to the new VM) and confirm that it is using the desired disk encryption set and keys.
+
+![Drag Racing](img/screen-02.png)
+
+From the `outputs.tf` the most meaningful tag that can be obtained is the ID of the Disk Encryption Set.
+
+```
+output "azurerm_disk_encryption_set_id" {
+  value = data.azurerm_disk_encryption_set.azdes.id
+}
+```
+
+![Drag Racing](img/screen-03.png)
+
 ### SSH connectivity
 
 Additionally, we assume that remote connectivity to the virtual machine is allowed. In this example, we make an assumption of a local, hidden `ssh` directory which holds a SSH public key.
