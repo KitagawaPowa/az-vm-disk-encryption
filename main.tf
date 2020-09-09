@@ -59,7 +59,7 @@ resource "azurerm_linux_virtual_machine" "azvm" {
 
   admin_ssh_key {
     username   = var.tfadmin
-    public_key = file("~/.ssh/interrupt_rsa.pub")
+    public_key = var.public_key
   }
 
   os_disk {
