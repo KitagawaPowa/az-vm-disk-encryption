@@ -12,3 +12,7 @@ variable "tfadmin" {
   type    = string
   default = "tfadmin"
 }
+
+variable "public_key" {
+  type = string
+}
