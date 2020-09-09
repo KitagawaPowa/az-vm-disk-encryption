@@ -12,40 +12,40 @@
 # }
 
 # Use this data source to access information about an existing Network Security Group.
-data "azurerm_network_security_group" "azvm" {
-  name                = azurerm_network_security_group.azvm.name
-  resource_group_name = data.azurerm_resource_group.azvm.name
-}
+# data "azurerm_network_security_group" "azvm" {
+#   name                = azurerm_network_security_group.azvm.name
+#   resource_group_name = data.azurerm_resource_group.azvm.name
+# }
 
-output "azurerm_network_security_group_location" {
-  value = data.azurerm_network_security_group.azvm.location
-}
+# output "azurerm_network_security_group_location" {
+#   value = data.azurerm_network_security_group.azvm.location
+# }
 
-output "azurerm_network_security_group_security_rule" {
-  value = data.azurerm_network_security_group.azvm.security_rule
-}
+# output "azurerm_network_security_group_security_rule" {
+#   value = data.azurerm_network_security_group.azvm.security_rule
+# }
 
-# Use this data source to access information about an existing Public IP Address.
-data "azurerm_public_ip" "azvm" {
-  name                = azurerm_public_ip.azvm.name
-  resource_group_name = data.azurerm_resource_group.azvm.name
-}
+# # Use this data source to access information about an existing Public IP Address.
+# data "azurerm_public_ip" "azvm" {
+#   name                = azurerm_public_ip.azvm.name
+#   resource_group_name = data.azurerm_resource_group.azvm.name
+# }
 
-# This output should be empty since we are not using a DNS label
-output "azurerm_domain_name_label" {
-  value = data.azurerm_public_ip.azvm.domain_name_label
-}
+# # This output should be empty since we are not using a DNS label
+# output "azurerm_domain_name_label" {
+#   value = data.azurerm_public_ip.azvm.domain_name_label
+# }
 
-output "azurerm_public_ip_address" {
-  value = data.azurerm_public_ip.azvm.ip_address
-}
+# output "azurerm_public_ip_address" {
+#   value = data.azurerm_public_ip.azvm.ip_address
+# }
 
-# Create customized output for reference. In this case, a local variable and a data source.
-output "ssh_command" {
-  value = "ssh -i ~/.ssh/id_rsa ${var.tfadmin}@${data.azurerm_public_ip.azvm.ip_address}"
-}
+# # Create customized output for reference. In this case, a local variable and a data source.
+# output "ssh_command" {
+#   value = "ssh -i ~/.ssh/id_rsa ${var.tfadmin}@${data.azurerm_public_ip.azvm.ip_address}"
+# }
 
-# Confirm the use of the SSE/CMK Keys as Disk Encryption Sets
-output "azurerm_disk_encryption_set_id" {
-  value = data.azurerm_disk_encryption_set.azdes.id
-}
+# # Confirm the use of the SSE/CMK Keys as Disk Encryption Sets
+# output "azurerm_disk_encryption_set_id" {
+#   value = data.azurerm_disk_encryption_set.azdes.id
+# }
