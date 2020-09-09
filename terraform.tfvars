@@ -1,3 +1,3 @@
 prefix   = "tester"
-location = "US East"
+location = "East US"
 tfadmin  = "tfadmin"
